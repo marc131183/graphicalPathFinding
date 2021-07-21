@@ -6,6 +6,14 @@ def heuristic(vertex1: Vertex, vertex2: Vertex):
     # return abs(vertex1.x - vertex2.x) + abs(vertex1.y - vertex2.y)
     # return max(abs(vertex1.x - vertex2.x), abs(vertex1.y - vertex2.y))
 
+def reconstructPath(solvedGraph: MatrixGraph, endCoordinates: tuple):
+    way = []
+    u = solvedGraph.vertices[endCoordinates[0]][endCoordinates[1]]
+    while u.previous != None:
+        way.append((u.previous.x, u.previous.y))
+        u = u.previous
+
+    return way
 
 def aStar(graph: MatrixGraph, startCoordinates: tuple, endCoordinates: tuple):
     visitOrder = []
@@ -19,8 +27,9 @@ def aStar(graph: MatrixGraph, startCoordinates: tuple, endCoordinates: tuple):
 
     while not prioQueue.isEmpty():
         u = prioQueue.extractMin()
+        visitOrder.append((u.x, u.y))
         if u.x == endCoordinates[0] and u.y == endCoordinates[1]:
-            return graph
+            return graph, reconstructPath(graph, endCoordinates), visitOrder
 
         for v in graph.getNeighbours(u):
             # since all weights between vertices are 1 for our case, we don't need to use weight(u, v)
